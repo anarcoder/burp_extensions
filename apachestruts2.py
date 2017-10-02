@@ -2,6 +2,9 @@ from burp import IBurpExtender
 from burp import IScannerCheck
 from burp import IScanIssue
 from burp import IHttpListener
+from burp import IContextMenuFactory
+from javax.swing import JMenuItem
+from java.util import List, ArrayList
 
 
 ISSUE = "Apache Struts2 RCE"
@@ -18,7 +21,7 @@ PUBLISH_ISSUE = "CustomScanIssue(currentMessage.getHttpService()"\
                                                    SEVERITY)
 
 
-class BurpExtender(IBurpExtender, IHttpListener, IScannerCheck):
+class BurpExtender(IBurpExtender, IHttpListener, IScannerCheck, IContextMenuFactory):
 
     def banner(self):
         print "Successfully loaded Apache Struts2 RCE - v0.1"
@@ -26,10 +29,21 @@ class BurpExtender(IBurpExtender, IHttpListener, IScannerCheck):
     def registerExtenderCallbacks(self, callbacks):
         self._callbacks = callbacks
         self._helpers = callbacks.getHelpers()
+        self.context    = None
         self._callbacks.setExtensionName("Apache Struts2 RCE Checker")
         callbacks.registerHttpListener(self)
         callbacks.registerScannerCheck(self)
+        callbacks.registerContextMenuFactory(self)
         self.banner()
+
+    def createMenuItems(self, context_menu):
+        self.context = context_menu
+        menu_list = ArrayList()
+        menu_list.add(JMenuItem("Send to Apache Struts2 RCE Xploiter", actionPerformed=self.AS2RCE_menu))
+        return menu_list
+
+    def AS2RCE_menu(self, event):
+        print 'menu ok'
 
     def processHttpMessage(self, toolFlag, messageIsRequest, currentMessage):
         if not messageIsRequest:
