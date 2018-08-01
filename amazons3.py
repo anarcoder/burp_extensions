@@ -17,13 +17,12 @@ PUBLISH_ISSUE = "CustomScanIssue(currentMessage.getHttpService(),"\
                 "(currentMessage, None, markers)]"\
                 ",\"{0}\",\"{1}\",\"{2}\",\"{3}\")"
 
-SUSP_STR = [r'bucket',
-            r'bucketSecret',
-            r'.amazonaws\.com/',
-            r's3-us-west-2\.',
-            r's3-sa-east-1\.',
+SUSP_STR = [r'.amazonaws\.com',
+            r'-sa-east-1',
+            r'amazonaws\.com',
             r'awsAccessKeyId',
-            r'AccessKey']
+            r'AccessKey',
+            r'SecretKey']
 
 SUSP_RGX = [re.compile(error, re.IGNORECASE) for error in SUSP_STR]
 
